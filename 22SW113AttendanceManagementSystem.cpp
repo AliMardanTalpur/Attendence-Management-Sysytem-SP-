@@ -1,0 +1,380 @@
+#include<iostream>
+#include<unistd.h>
+#include<iomanip>
+#include<conio.h>
+#include<fstream>
+#include<cstring>
+#include<cstdlib>
+#include<cstdio>
+#include<limits>
+#include<string>
+#include<filesystem>
+#include<chrono>
+#include<thread>
+#include<dirent.h>
+#include<windows.h>
+#include<string.h>
+#include<stdio.h>
+
+using namespace std;
+// int welcome();
+// void delay();
+// void Teacher();
+// void writeAttendanceToFile();
+// void welcome();
+// void searchRollNo(string rollNo);
+// void searchRollNoInFolder(string folderPath, string rollNo);
+// void teacherlogin();
+
+
+class link
+{
+public:
+//*----------------------------------------------------------------------------------------------------------------------------
+                                                            //Effects
+void welcome() //Function to show welcome effect
+{
+    system("cls");
+    cout<<endl;
+    for (int i = 0; i <=72; i++)
+    {
+        cout<<"_";
+        delay(); 
+    }
+    cout<<"\n";
+    for(int i = 1; i <=2; i++)
+    {
+        cout<<"\n|\t\t\t\t\t\t\t\t\t|";
+        delay();
+    }
+
+    delay();
+    cout <<"\n|\t\t\t\tWelcome\t\t\t\t\t|";
+
+    for (int i = 1; i <=2; i++)
+    {
+        cout<<"\n|\t\t\t\t\t\t\t\t\t|";
+        delay();
+    }
+
+    cout<<"\n";
+    for (int i = 0; i <=72; i++)
+    {
+        cout<<"_";
+        delay(); 
+    }
+    cout<<"\n\n\n";
+    option();
+}
+
+void delay() //Function to delay the output
+{
+for(int i = 0; i<1000000; i++);
+}
+
+void loading() //Function to show loading effect
+{
+    cout<<"\nLoading";
+
+    for (int i = 0; i < 3; i++)
+    {
+        sleep(1);
+        cout<<".";
+    }
+    
+}
+
+void saving() //Function to show saving effect
+{
+    cout<<"\nSaving";
+
+    for (int i = 0; i < 3; i++)
+    {
+        sleep(1);
+        cout<<".";
+    }
+    cout<<endl;
+    
+}
+
+void effect()
+{
+Sleep(800);
+cout<<"\t\t\t\t\t\t\t\b\bATTENDANCE MANAGEMENT SYSTEM:\n";
+	Sleep(600);
+    Sleep( 1000 );
+	cout<<"\t\t\t\t\t\t\t\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB";
+	Sleep(2000);
+	cout<<"\xDB\xDB\xDB\xDB";
+	Sleep(1000);
+	cout<<"\xDB\xDB\xDB\xDB\xDB\xDB";
+	Sleep(1000);
+	cout<<"\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB";
+	Sleep(500);
+    }
+
+void start()
+{
+    cout<<"\t\t\t\t\t\t\tPlease Wait For a moment"<<endl;
+    effect();
+    system("cls");
+    welcome();
+}
+
+//*----------------------------------------------------------------------------------------------------------------------------
+                                                            //Functions
+void Teacher() //funtion for teacher section
+{
+    system("cls");
+    cout<<"\t\t\t\t\t\t\t----------------Tearcer Section----------------\n\n\n";
+    teacherlogin();
+}
+
+void searchRollNoInFolder(string folderPath, string rollNo) //Function to search roll no in a file
+{
+    DIR* dir;
+    struct dirent* ent;
+    if ((dir = opendir(folderPath.c_str())) != NULL) {
+        while ((ent = readdir(dir)) != NULL) {
+            string filename = ent->d_name;
+            // Check if the file is a text file
+            if (filename.size() >= 4 && filename.substr(filename.size() - 4) == ".txt") {
+                // Open the file
+                string filepath = folderPath + "/" + filename;
+                ifstream file(filepath);
+                if (file.is_open()) {
+                    // Search for the roll number in the file
+                    string line;
+                    while (getline(file, line)) {
+                        if (line.find(rollNo) != string::npos) {
+                            // cout << "Roll number " << rollNo << " found in file " << filepath << endl;
+                            cout << "Roll No " << line << " in " << filename << endl;
+                            break;
+                        }
+                    }
+                    file.close();
+                } else {
+                    cerr << "Error: could not open file " << filepath << endl;
+                    cout<<"returning to main manu....";
+                    saving();
+                    welcome();
+                }
+            }
+        }
+        closedir(dir);
+        cout<<"Press Any Key To return to Main Manu";
+        getch();
+        saving();
+        welcome();
+    } else {
+        cerr << "Error: could not open directory " << folderPath << endl;
+        cout<<"returning to main manu....";
+        saving();
+        welcome();
+    }
+}
+
+void searchRollNo(string roll_No) //Function get the roll no and call the searchRollNoInFolder function
+{
+    string folderPath = "E:/Destop/Assignments/PF/PF/22SW113-Semester Project";
+    searchRollNoInFolder(folderPath, roll_No);
+}
+
+void Student() //Function to login as student 
+{
+    system("cls");
+    cout << "----------------Student Section----------------";
+    string rollNo;
+    cout << "\n\n\nEnter Your Roll No : ";
+    cin >> rollNo;
+    searchRollNo(rollNo);
+}
+
+void teacherlogin() //Function to login as teacher
+{
+    system("cls");
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    string username, password;
+    cout<<"\t\t\t\t\t\t\t----------------Admin Section----------------\n\n\n";
+    cout<<"\t\tTo Exit Press Q\n";
+    cout<<"\t\tEnter Username : ";
+    getline(cin, username);
+    if (username == "q" || username == "Q")
+    {
+        welcome();
+    }
+    cout<<"\t\tEnter Password : "; 
+    getline(cin, password);
+    if (password == "q" || password == "Q")
+    {
+        welcome();
+    }
+    if (username == "admin" && password == "admin")
+    {
+        cout<<"\n\tLogin Successfull";
+        cout<<"\n\tPress Any Key To Continue";
+        getch();
+        writeAttendanceToFile();
+    }
+    else
+    {
+        cout<<"\n\tInvalide Username or Password";
+        cout<<"\n\tPlease Try Again";
+        cout<<"\n\tPress Any Key To Continue";
+        getch();
+        teacherlogin();
+    }
+}
+
+void writeAttendanceToFile() //Function to write attendance to file
+{
+    system("cls");
+    // cin.ignore();
+    string file_path;
+    string date;
+    cout<<"Subject : ";
+    getline(cin, file_path);
+
+    if (file_path == "") {
+        cout << "Invalid file name. Press any key to try again" << endl;
+        getch();
+        writeAttendanceToFile();
+    }
+    cout<<"Enter Date(DD-MM-YYYY) : ";
+    getline(cin, date);
+
+    if (date == "") {
+        cout << "Invalid file name. Press any key to try again" << endl;
+        getch();
+        writeAttendanceToFile();
+    }
+    string full_path = file_path + "_" + date + ".txt";
+    ifstream check_file(full_path);
+    if (check_file.good()) {
+        check_file.close();
+        string new_full_path, new_file_path, new_date;
+        cout << "File " << new_full_path << " already exists. Please enter a new file Name & Date : ";
+        getline(cin, new_file_path);
+    if (new_file_path == "")
+    {
+        cout << "Invalid file name. Press any key to try again" << endl;
+        getch();
+        writeAttendanceToFile();
+    }
+        getline(cin, new_date);
+    if (new_date == "") 
+    {
+        cout << "Invalid file name. Press any key to try again" << endl;
+        getch();
+        writeAttendanceToFile();
+    }
+        new_full_path = new_file_path + "_" + new_date + ".txt";
+        full_path = new_full_path;
+    }
+    ofstream file(full_path);
+
+    if (!file.is_open()) {
+        cerr << "Error: could not open file " << full_path << endl;
+        return;
+    }
+
+    int arr[] = {1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 52, 58, 61, 64, 67, 70, 73, 76, 79, 82, 83, 101, 104, 107, 110, 113, 116, 119, 122, 125, 128, 131, 134, 137, 140, 143, 155, 158, 161, 164, 168, 000};
+    string department, batch, line;
+    cout<<"Enter Your Department : ";
+    getline(cin, department);
+    cout<<"Your Batch : ";
+    getline(cin,batch);
+
+int SIZE = sizeof(arr)/sizeof(int); 
+
+   for (int i = 0; i < SIZE; i++)
+   {
+        cout<<endl<<batch<<department<<arr[i]<<" Is A/P or Press Q/q to Exit: ";
+        line=getche();
+    file << batch << department<< arr[i] << " is : "<< line << "," << endl;
+            if (line == "q") 
+        {
+            break;
+        }
+        if (line != "A" && line != "P" && line != "a" && line != "p") 
+        {
+            cout << "Invalid attendance status. Enter A or P." << endl;
+            --i;
+            continue;
+        }
+            file << line << endl;
+
+        if(i == SIZE)
+        {
+            break;
+        }
+   }
+
+    cout << "\n\n\n\t\tAttendance data saved to file " << full_path << endl;
+    file.close();
+    cout << "\n\nPress any key to continue...";
+    getch();
+    welcome();
+}
+
+void option() // main menu
+{
+    cout<<"\n1 : Teacher";
+    cout<<"\n2 : Student";
+    cout<<"\n3 : Exit";
+    
+    cout<<"\n\nChoose any option : ";
+    
+    int choise;
+    cin>>choise;
+    switch (choise)
+    {
+    case 1:
+        Teacher();
+        break;
+    case 2:
+        Student();
+        break;
+    
+    case 3: cout<<"Are you sure you want to exit? (y/n)";
+        char x;
+        cin>>x;
+        if (x == 'y')
+        {
+            cout<<"\nThank you for using our system";
+            saving();
+            cout<<"exiting";
+            for (int i = 0; i < 3; i++)
+            {
+                sleep(1);
+                cout<<".";
+            }
+            exit(0);
+        }
+        else
+        {
+            welcome();
+        }
+        break;
+    default: " Invalide Input Please try again.....";
+        break;
+    }
+}
+
+};
+
+//*----------------------------------------------------------------------------------------------------------------------------
+                                                            //Main Function
+int main()
+{
+system("cls"); 
+system("color A");
+
+link obj;
+obj.start();
+obj.option();
+
+return 0;
+}
+
